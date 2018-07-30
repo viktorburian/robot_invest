@@ -1,0 +1,327 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6AC379400000000000000000 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E5927C0000000000000000 /* Cocoa.framework */; };
+		76F2D0BF0000000000000000 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE14E9FB0000000000000000 /* Foundation.framework */; };
+		A06536930000000000000000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27874FCF0000000000000000 /* Assets.xcassets */; };
+		F69386000000000000000000 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8818ACC20000000000000000 /* Info.plist */; };
+		944804410000000000000000 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1B6A1D7D0000000000000000 /* Entitlements.plist */; };
+		8961FB4B0000000000000000 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 108414870000000000000000 /* Main.storyboard */; };
+		1DFCBA8F0000000000000000 /* IndicatorData.h in Sources */ = {isa = PBXBuildFile; fileRef = A51ED3CB0000000000000000 /* IndicatorData.h */; };
+		4A12A0800000000000000000 /* IndicatorData.m in Sources */ = {isa = PBXBuildFile; fileRef = D134B9BC0000000000000000 /* IndicatorData.m */; };
+		281737150000000000000000 /* ViewController.h in Sources */ = {isa = PBXBuildFile; fileRef = AF3950510000000000000000 /* ViewController.h */; };
+		62714F7E0000000000000000 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99368BA0000000000000000 /* ViewController.m */; };
+		B3E0C85C0000000000000000 /* AppDelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 3B02E1980000000000000000 /* AppDelegate.h */; };
+		C0101FDB0000000000000000 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 473239170000000000000000 /* AppDelegate.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A3FC80FB0000000000000000 /* RobotInvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "RobotInvest.app"; path = "RobotInvest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1E5927C0000000000000000 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Cocoa.framework"; path = "System/Library/Frameworks/Cocoa.framework"; sourceTree = SDKROOT; };
+		FE14E9FB0000000000000000 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "System/Library/Frameworks/Foundation.framework"; sourceTree = SDKROOT; };
+		27874FCF0000000000000000 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Assets.xcassets"; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		8818ACC20000000000000000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "Info.plist"; sourceTree = "<group>"; };
+		1B6A1D7D0000000000000000 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Entitlements.plist"; path = "Entitlements.plist"; sourceTree = "<group>"; };
+		108414870000000000000000 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "Main.storyboard"; path = "Main.storyboard"; sourceTree = "<group>"; };
+		456B28750000000000000000 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "en"; path = "en.lproj/Main.storyboard"; sourceTree = "<group>"; };
+		A51ED3CB0000000000000000 /* IndicatorData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "IndicatorData.h"; path = "IndicatorData.h"; sourceTree = "<group>"; };
+		D134B9BC0000000000000000 /* IndicatorData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "IndicatorData.m"; path = "IndicatorData.m"; sourceTree = "<group>"; };
+		AF3950510000000000000000 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ViewController.h"; path = "ViewController.h"; sourceTree = "<group>"; };
+		E99368BA0000000000000000 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "ViewController.m"; path = "ViewController.m"; sourceTree = "<group>"; };
+		3B02E1980000000000000000 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AppDelegate.h"; path = "AppDelegate.h"; sourceTree = "<group>"; };
+		473239170000000000000000 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "AppDelegate.m"; path = "AppDelegate.m"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E7F353D10000000000000000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AC379400000000000000000 /* Cocoa.framework in Frameworks */,
+				76F2D0BF0000000000000000 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5D7311130000000000000000 = {
+			isa = PBXGroup;
+			children = (
+				B9C892E70000000000000000 /* RobotInvest */,
+				B66A69650000000000000000 /* Frameworks */,
+				8B9DD1FD0000000000000000 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8B9DD1FD0000000000000000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A3FC80FB0000000000000000 /* RobotInvest.app */,
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+		B66A69650000000000000000 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE14E9FB0000000000000000 /* Foundation.framework */,
+				F1E5927C0000000000000000 /* Cocoa.framework */,
+			);
+			name = "Frameworks";
+			sourceTree = "<group>";
+		};
+		B9C892E70000000000000000 /* RobotInvest */ = {
+			isa = PBXGroup;
+			children = (
+				3B02E1980000000000000000 /* AppDelegate.h */,
+				473239170000000000000000 /* AppDelegate.m */,
+				27874FCF0000000000000000 /* Assets.xcassets */,
+				1B6A1D7D0000000000000000 /* Entitlements.plist */,
+				A51ED3CB0000000000000000 /* IndicatorData.h */,
+				D134B9BC0000000000000000 /* IndicatorData.m */,
+				8818ACC20000000000000000 /* Info.plist */,
+				108414870000000000000000 /* Main.storyboard */,
+				E5B77D1F0000000000000000 /* Main.storyboard */,
+				AF3950510000000000000000 /* ViewController.h */,
+				E99368BA0000000000000000 /* ViewController.m */,
+			);
+			name = "RobotInvest";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E3C99DDF0000000000000000 /* RobotInvest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E96354700000000000000000 /* Build configuration list for PBXNativeTarget "RobotInvest" */;
+			buildPhases = (
+				4448D5A50000000000000000 /* Sources */,
+				E7F353D10000000000000000 /* Frameworks */,
+				528D081D0000000000000000 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RobotInvest";
+			productName = "RobotInvest";
+			productReference = A3FC80FB0000000000000000 /* RobotInvest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B02BD87A0000000000000000 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = B59EDCF50000000000000000 /* Build configuration list for PBXProject "RobotInvest" */;
+			compatibilityVersion = "Xcode 8.0";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5D7311130000000000000000;
+			productRefGroup = 8B9DD1FD0000000000000000 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E3C99DDF0000000000000000 /* RobotInvest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		528D081D0000000000000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A06536930000000000000000 /* Assets.xcassets in Resources */,
+				F69386000000000000000000 /* Info.plist in Resources */,
+				944804410000000000000000 /* Entitlements.plist in Resources */,
+				8961FB4B0000000000000000 /* Main.storyboard in Resources */,
+				E915A6A10000000000000000 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4448D5A50000000000000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1DFCBA8F0000000000000000 /* IndicatorData.h in Sources */,
+				4A12A0800000000000000000 /* IndicatorData.m in Sources */,
+				281737150000000000000000 /* ViewController.h in Sources */,
+				62714F7E0000000000000000 /* ViewController.m in Sources */,
+				B3E0C85C0000000000000000 /* AppDelegate.h in Sources */,
+				C0101FDB0000000000000000 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E5B77D1F0000000000000000 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				456B28750000000000000000 /* en */,
+			);
+			name = "Main.storyboard";
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5B719D690000000000000000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		897E8BBE0000000000000000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A99511F20000000000000000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.viktorburian.RobotInvest";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3D6444C60000000000000000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.viktorburian.RobotInvest";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B59EDCF50000000000000000 /* Build configuration list for PBXProject "RobotInvest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B719D690000000000000000 /* Debug */,
+				897E8BBE0000000000000000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E96354700000000000000000 /* Build configuration list for PBXNativeTarget "RobotInvest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99511F20000000000000000 /* Debug */,
+				3D6444C60000000000000000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B02BD87A0000000000000000 /* Project object */;
+}

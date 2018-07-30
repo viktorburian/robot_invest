@@ -1,0 +1,19 @@
+# Version: 4.4.99.178 (d15-7: eeaeb7e6)
+# [first argument, ignore] # /Library/Frameworks/Xamarin.Mac.framework/Versions/4.4.1.178/lib/mmp/mmp.exe
+/Library/Frameworks/Xamarin.Mac.framework/Versions/4.4.1.178/lib/mmp/mmp.exe \
+	/verbose \
+	/debug \
+	/output:/Users/viktor/Projects/RobotInvest/RobotInvest/bin/Debug/ \
+	/name:RobotInvest \
+	'/profile:Xamarin.Mac,Version=v2.0,Profile=Mobile' \
+	/arch:x86_64 \
+	--http-message-handler=HttpClientHandler \
+	/minos=10.13 \
+	/nolink \
+	/assembly:/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono/Xamarin.Mac/mscorlib.dll \
+	/assembly:/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono/Xamarin.Mac/System.Core.dll \
+	/assembly:/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono/Xamarin.Mac/System.dll \
+	/assembly:/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono/Xamarin.Mac/Xamarin.Mac.dll \
+	/root-assembly:/Users/viktor/Projects/RobotInvest/RobotInvest/bin/Debug/RobotInvest.exe \
+	/sdkroot:/Applications/Xcode.app/Contents/Developer \
+	--cache:/Users/viktor/Projects/RobotInvest/RobotInvest/obj/x86/Debug/mmp-cache \
