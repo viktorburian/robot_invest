@@ -72,7 +72,8 @@ namespace RobotInvest.Model
             string[] linesDJIA = null;
             string[] linesMZM = null;
             int positionDJIA = 0;
-            double koefDJIA = 0.6565037324782718;
+            // DEPRECATED
+            // double koefDJIA = 0.6565037324782718;
             try
             {
                 linesDJIA = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "DJIA.csv"));
@@ -94,8 +95,12 @@ namespace RobotInvest.Model
             double DJIA  = Convert.ToDouble(linesDJIA[positionDJIA].Split(',')[1]);
             double deltaDays = (DateTime.ParseExact(linesDJIA[positionDJIA].Split(',')[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) 
                              - DateTime.ParseExact(linesMZM[0].Split(',')[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)).Days;
-            //indicatorData.Stocks = koefDJIA * DJIA / (Math.Pow((MZM_0 / MZM_1 + MZM_1 / MZM_2) / 2, deltaDays / 30) * MZM_0);
-            indicatorData.Stocks = 100*(koefDJIA * DJIA / (Math.Pow((MZM_0 / MZM_1 + MZM_1 / MZM_2) / 2, deltaDays / 30) * MZM_0) - 1);
+            // DEPRECATED
+            //indicatorData.Stocks = 100*(koefDJIA * DJIA / (Math.Pow((MZM_0 / MZM_1 + MZM_1 / MZM_2) / 2, deltaDays / 30) * MZM_0) - 1);
+
+            // Pavel Kohout log10 linear fit
+            double MZM_current = Math.Pow((MZM_0 / MZM_1 + MZM_1 / MZM_2) / 2, deltaDays / 30) * MZM_0;
+            indicatorData.Stocks = 100 * ((DJIA / Math.Pow(10, 1.07775711 * Math.Log10(MZM_current) - 0.14532113)) - 1);
 
             // MZMYTD indicator
             string[] lines = null;
