@@ -13,6 +13,9 @@ namespace RobotInvest
 	partial class ViewController
 	{
 		[Outlet]
+		AppKit.NSTextField AppInfoLabel { get; set; }
+
+		[Outlet]
 		AppKit.NSTextField BankMeterCurrentLabel { get; set; }
 
 		[Outlet]
@@ -135,6 +138,11 @@ namespace RobotInvest
 			if (YieldSpreadLabel != null) {
 				YieldSpreadLabel.Dispose ();
 				YieldSpreadLabel = null;
+			}
+
+			if (AppInfoLabel != null) {
+				AppInfoLabel.Dispose ();
+				AppInfoLabel = null;
 			}
 		}
 	}

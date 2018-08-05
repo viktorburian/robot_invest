@@ -882,6 +882,15 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n9w-Er-HwN">
+                                <rect key="frame" x="65" y="214" width="204" height="19"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Application Ready" id="mcu-lZ-hra">
+                                    <font key="font" metaFont="system" size="14"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="HAn-N2-aWp" firstAttribute="leading" secondItem="bCg-jV-T1c" secondAttribute="trailing" constant="8" symbolic="YES" id="1Ob-UW-Bw4"/>
@@ -919,6 +928,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="AppInfoLabel" destination="n9w-Er-HwN" id="U7b-A3-Og9"/>
                         <outlet property="BankMeterCurrentLabel" destination="ZmD-hG-CCv" id="Dki-1h-crD"/>
                         <outlet property="BankMeterYTDLabel" destination="tDW-wK-2Tb" id="oqb-xJ-SnJ"/>
                         <outlet property="InflationArrow" destination="gTA-t9-K8X" id="EAq-Rf-mu1"/>

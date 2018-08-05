@@ -9,7 +9,7 @@ using RobotInvest.Model;
 
 namespace RobotInvest
 {
-    public partial class ViewController : NSViewController
+    public partial class ViewController : NSViewController, IDisposable
     {
         MainModel mainModel = new MainModel();
         private IndicatorData _indicatorData;
@@ -31,10 +31,7 @@ namespace RobotInvest
         {
             // Disabling the button to prevent reentring the operation
             UpdateButtonOutlet.Enabled = false;
-
             Task task = mainModel.UpdateIndicators();
-
-            //UpdateButtonOutlet.Enabled = true;
         }
 
         public ViewController(IntPtr handle) : base(handle)
@@ -54,8 +51,12 @@ namespace RobotInvest
             BankMeterCurrentLabel.StringValue = "+0.0";
             BankMeterYTDLabel.StringValue = "+0.0";
 
-            Indicators = IndicatorData.Instance();
+            AppInfoLabel.StringValue = "Application Ready";
+
+            Indicators = IndicatorData.Instance;
             Indicators.PropertyChanged += UpdateUI;
+            mainModel.UpdateFinishedEvent += MainModel_UpdateFinishedEvent;
+            mainModel.DownloadInfoEvent += MainModel_DownloadInfoEvent;
         }
 
         void UpdateUI(object sender, PropertyChangedEventArgs e)
@@ -86,6 +87,25 @@ namespace RobotInvest
                 default:
                     break;
             }
+        }
+
+        void MainModel_UpdateFinishedEvent(object sender, EventArgs e)
+        {
+            UpdateButtonOutlet.Enabled = true;
+            AppInfoLabel.StringValue = "Application Ready";
+        }
+
+        void MainModel_DownloadInfoEvent(object sender, string e)
+        {
+            AppInfoLabel.StringValue = "Downloading " + e;
+        }
+
+        public override void ViewDidDisappear()
+        {
+            base.ViewDidDisappear();
+            // Releasing the resources
+            Indicators.PropertyChanged -= UpdateUI;
+            mainModel.UpdateFinishedEvent -= MainModel_UpdateFinishedEvent;
         }
 
         public override NSObject RepresentedObject

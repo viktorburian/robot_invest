@@ -5,10 +5,10 @@ using System.ComponentModel;
 namespace RobotInvest.Model
 {
     [Register("IndicatorData")]
-    public class IndicatorData : NSObject, INotifyPropertyChanged
+    public sealed class IndicatorData : NSObject, INotifyPropertyChanged
     {
         #region Private Fields
-        private static IndicatorData _instance;
+        private static readonly IndicatorData _instance = new IndicatorData();
 
         private double _stocks;
         private double _inflation;
@@ -21,7 +21,7 @@ namespace RobotInvest.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string name)
+        private void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -117,17 +117,20 @@ namespace RobotInvest.Model
             }
         }
 
+        static IndicatorData()
+        {
+        }
+
         private IndicatorData()
         {
         }
 
-        public static IndicatorData Instance()
+        public static IndicatorData Instance
         {
-            if (_instance == null)
+            get
             {
-                _instance = new IndicatorData();
+                return _instance;
             }
-            return _instance;
         }
     }
 }
