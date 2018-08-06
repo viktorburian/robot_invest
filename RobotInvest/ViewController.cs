@@ -31,7 +31,31 @@ namespace RobotInvest
         {
             // Disabling the button to prevent reentring the operation
             UpdateButtonOutlet.Enabled = false;
-            Task task = mainModel.UpdateIndicators();
+            //Task task = mainModel.UpdateIndicators();
+
+            Task task1 = mainModel.FooAsync();
+            Console.WriteLine(task1.IsFaulted);
+
+            task1.Exception?.InnerExceptions.ToList().ForEach((obj) => Console.WriteLine(obj.Message));
+            Exception ex = task1.Exception?.InnerException;
+
+            /*
+            foreach (var item in task1.Exception?.InnerExceptions)
+            {
+                Console.WriteLine(item.Message);
+            }*/
+
+            //Console.WriteLine(task.Exception.InnerException.Message);
+            /*
+            try
+            {
+                Task task = mainModel.UpdateIndicators();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            */
         }
 
         public ViewController(IntPtr handle) : base(handle)

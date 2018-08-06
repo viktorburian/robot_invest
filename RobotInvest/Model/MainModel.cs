@@ -19,6 +19,30 @@ namespace RobotInvest.Model
         {
         }
 
+        public Task FooAsync()
+        {
+            try
+            {
+                int b = 1;
+                int a = 5 / b;
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+                //Console.WriteLine(e.Message);
+            }
+            Console.WriteLine("Downloading");
+            Task task;
+            using (WebClient client = new WebClient())
+            {
+                // Call event with filename argument to display in the main window
+                DownloadInfoEvent?.Invoke(this, "MZM");
+                task = client.DownloadFileTaskAsync(HelperClass.GetURL(new DateTime(1900, 1, 1), DateTime.Today, "MZM"), Path.Combine(HelperClass.homeDirectoryPath, "MZM.csv"));
+            }
+            UpdateFinishedEvent?.Invoke(this, new EventArgs());
+            return task;
+        }
+
         public async Task UpdateIndicators()
         {
             // Downloading data sources
@@ -37,9 +61,7 @@ namespace RobotInvest.Model
                 linesMZM = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "MZM.csv"));
                 Array.Reverse(linesDJIA);
                 Array.Reverse(linesMZM);
-                // DEBUG
-                int b = 0;
-                int a = 5 / b;
+
             }
             catch (Exception ex)
             {
@@ -181,13 +203,11 @@ namespace RobotInvest.Model
                     string filePath = fileEntries.Find(fe => fe.Contains(fileName));
                     if (DateTime.UtcNow - Directory.GetLastWriteTimeUtc(filePath) > timeSpan)
                     {
-                        //filesToDownloadList.Add(fileName);
                         await DownloadFile(fileName);
                     }
                 }
                 else
                 {
-                    //filesToDownloadList.Add(fileName);
                     await DownloadFile(fileName);
                 }
             }
