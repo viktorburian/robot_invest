@@ -30,14 +30,21 @@ namespace RobotInvest
         // Action performed after the Update button is clicked
         {
             // Disabling the button to prevent reentring the operation
-            UpdateButtonOutlet.Enabled = false;
+            //UpdateButtonOutlet.Enabled = false;
             //Task task = mainModel.UpdateIndicators();
 
+            //Task.Run(() => mainModel.DoSyncStuff());
+            //Console.WriteLine("Continue");
+
+            Task.Run(() => mainModel.UpdateIndicatorsSync());
+
+            /*
             Task task1 = mainModel.FooAsync();
-            Console.WriteLine(task1.IsFaulted);
+            Console.WriteLine("Is task faulted?: "+task1.IsFaulted);
 
             task1.Exception?.InnerExceptions.ToList().ForEach((obj) => Console.WriteLine(obj.Message));
             Exception ex = task1.Exception?.InnerException;
+            */
 
             /*
             foreach (var item in task1.Exception?.InnerExceptions)
