@@ -30,13 +30,13 @@ namespace RobotInvest
         // Action performed after the Update button is clicked
         {
             // Disabling the button to prevent reentring the operation
-            //UpdateButtonOutlet.Enabled = false;
-            //Task task = mainModel.UpdateIndicators();
+            UpdateButtonOutlet.Enabled = false;
+            Task task = mainModel.UpdateIndicators();
 
             //Task.Run(() => mainModel.DoSyncStuff());
             //Console.WriteLine("Continue");
 
-            Task.Run(() => mainModel.UpdateIndicatorsSync());
+            //Task.Run(() => mainModel.UpdateIndicatorsSync());
 
             /*
             Task task1 = mainModel.FooAsync();

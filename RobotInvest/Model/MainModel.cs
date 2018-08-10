@@ -171,10 +171,13 @@ namespace RobotInvest.Model
                 Console.WriteLine(e.Message);
             }
             int positionLoans = 0;
+            // Deprecated to take just the last record of the loans
+            /*
             while (positionLoans < linesLoans.Count() && linesTight[0].Split(',')[0] != linesLoans[positionLoans].Split(',')[0])
             {
                 positionLoans++;
             }
+            */
             indicatorData.LoansMajor = koefLoans * Convert.ToDouble(linesTight[0].Split(',')[1]) + Convert.ToDouble(linesLoans[positionLoans].Split(',')[1]);
             // LOANS Minor indicator
             indicatorData.LoansMinor = koefLoans * Convert.ToDouble(linesTight[4].Split(',')[1]) + Convert.ToDouble(linesLoans[positionLoans+12].Split(',')[1]);
@@ -182,20 +185,23 @@ namespace RobotInvest.Model
             // Raising event that the indicator update function has finished
             UpdateFinishedEvent?.Invoke(this, new EventArgs());
             /*
+            Console.WriteLine("Před chybou");
             try
             {
-                int b = 1;
+                int b = 0;
                 int a = 5 / b;
             }
             catch (Exception e)
             {
-                return Task.FromException(e);
-                //Console.WriteLine(e.Message);
+                //return Task.FromException(e);
+                Console.WriteLine("Error message: "+e.Message);
+                throw new NotImplementedException("ERROR VOLE");
             }
+            Console.WriteLine("Konec");
             */
         }
 
-        private async Task GetFredResources()
+        private async Task<int> GetFredResources()
         {
             // Checking if home directory exists.
             if (!Directory.Exists(HelperClass.homeDirectoryPath))
@@ -206,7 +212,8 @@ namespace RobotInvest.Model
                     MessageText = "The home directory doesn't exist"
                 };
                 alert.RunModal();
-                return;
+                // Error occured during the runtime
+                return -1;
             }
 
             // Looping over all data files
@@ -217,8 +224,9 @@ namespace RobotInvest.Model
                 // Check if the fileName exists in the fileEntries
                 if (fileEntries.Exists(fe => fe.EndsWith(fileName+".csv", StringComparison.CurrentCulture)))
                 {
-                    string filePath = fileEntries.Find(fe => fe.Contains(fileName));
-                    if (DateTime.UtcNow - Directory.GetLastWriteTimeUtc(filePath) > timeSpan)
+                    string filePath = fileEntries.Find(fe => fe.EndsWith(fileName + ".csv", StringComparison.CurrentCulture));
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    if (DateTime.UtcNow - Directory.GetLastWriteTimeUtc(filePath) > timeSpan || fileInfo.Length == 0)
                     {
                         await DownloadFile(fileName);
                     }
@@ -228,6 +236,8 @@ namespace RobotInvest.Model
                     await DownloadFile(fileName);
                 }
             }
+            // Method exited successfully
+            return 0;
         }
 
         private async Task DownloadFile(string fileName)
@@ -244,9 +254,16 @@ namespace RobotInvest.Model
             catch (WebException wex)
             {
                 Console.WriteLine("Web exception:");
-                Console.WriteLine(wex.Message);
-                Console.WriteLine(wex.GetBaseException().Message);
-                Console.WriteLine(wex.InnerException.Message);
+                Console.WriteLine("wex message: "+wex.Message);
+                Console.WriteLine("Base ex message: "+wex.GetBaseException().Message);
+                Console.WriteLine("status: "+wex.Status.ToString());
+                if(wex.Response != null)
+                {
+                    Console.WriteLine(wex.Response);
+                }
+                else{
+                    Console.WriteLine("source is null");
+                }
             }
             catch (Exception ex)
             {
