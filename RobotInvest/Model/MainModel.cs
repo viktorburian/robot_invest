@@ -12,13 +12,14 @@ namespace RobotInvest.Model
     public class MainModel
     {
         IndicatorData indicatorData;
-        public event EventHandler UpdateFinishedEvent;
+        public event EventHandler<UpdateInfoEventArgs> UpdateFinishedEvent;
         public event EventHandler<string> DownloadInfoEvent;
 
         static MainModel()
         {
         }
 
+        /*
         public Task FooAsync()
         {
             try
@@ -47,11 +48,22 @@ namespace RobotInvest.Model
             UpdateFinishedEvent?.Invoke(this, new EventArgs());
             return task;
         }
+        */
 
         public async Task UpdateIndicators()
         {
             // Downloading data sources
-            await GetFredResources();
+            Task<ResultStatusEnum> task = GetFredResources();
+            await task;
+            Console.WriteLine(task.Result);
+            Console.WriteLine(task.IsCompletedSuccessfully);
+            Console.WriteLine(task.Status);
+            if (task.Result != ResultStatusEnum.Success)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs(){Result=task.Result});
+                // Returning from the method
+                return;
+            }
 
             // Read the values from files and calculate indicators
             indicatorData = IndicatorData.Instance;
@@ -183,7 +195,8 @@ namespace RobotInvest.Model
             indicatorData.LoansMinor = koefLoans * Convert.ToDouble(linesTight[4].Split(',')[1]) + Convert.ToDouble(linesLoans[positionLoans+12].Split(',')[1]);
 
             // Raising event that the indicator update function has finished
-            UpdateFinishedEvent?.Invoke(this, new EventArgs());
+            UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs(){Result=ResultStatusEnum.Success});
+
             /*
             Console.WriteLine("Před chybou");
             try
@@ -201,19 +214,12 @@ namespace RobotInvest.Model
             */
         }
 
-        private async Task<int> GetFredResources()
+        private async Task<ResultStatusEnum> GetFredResources()
         {
             // Checking if home directory exists.
             if (!Directory.Exists(HelperClass.homeDirectoryPath))
             {
-                var alert = new NSAlert
-                {
-                    AlertStyle = NSAlertStyle.Warning,
-                    MessageText = "The home directory doesn't exist"
-                };
-                alert.RunModal();
-                // Error occured during the runtime
-                return -1;
+                return ResultStatusEnum.HomeDirectoryError;
             }
 
             // Looping over all data files
@@ -228,19 +234,46 @@ namespace RobotInvest.Model
                     FileInfo fileInfo = new FileInfo(filePath);
                     if (DateTime.UtcNow - Directory.GetLastWriteTimeUtc(filePath) > timeSpan || fileInfo.Length == 0)
                     {
-                        await DownloadFile(fileName);
+                        Task<ResultStatusEnum> task = DownloadFile(fileName);
+                        await task;
+                        // Research task.IsCompletedSuccessfully property as condition
+                        if (!task.IsCompleted || task.IsFaulted || task.IsCanceled || task.Result != ResultStatusEnum.Success)
+                        {
+                            Console.WriteLine("NOT OK");
+                            // Keep this line
+                            return task.Result;
+                        }
+                        // Remove the else statement
+                        else
+                        {
+                            Console.WriteLine("OK");
+                        }
                     }
                 }
                 else
                 {
-                    await DownloadFile(fileName);
+                    Task<ResultStatusEnum> task = DownloadFile(fileName);
+                    await task;
+                    Console.WriteLine("Download file status: "+task.Result);
+                    Console.WriteLine("Completed succesfully: "+task.IsCompletedSuccessfully);
+                    if (!task.IsCompleted || task.IsFaulted || task.IsCanceled || task.Result != ResultStatusEnum.Success)
+                    {
+                        Console.WriteLine("NOT OK");
+                        // Keep this line
+                        return task.Result;
+                    }
+                    // remove the else statement
+                    else
+                    {
+                        Console.WriteLine("OK");
+                    }
                 }
             }
             // Method exited successfully
-            return 0;
+            return ResultStatusEnum.Success;
         }
 
-        private async Task DownloadFile(string fileName)
+        private async Task<ResultStatusEnum> DownloadFile(string fileName)
         {
             try
             {
@@ -248,7 +281,8 @@ namespace RobotInvest.Model
                 {
                     // Call event with filename argument to display in the main window
                     DownloadInfoEvent?.Invoke(this, fileName);
-                    await client.DownloadFileTaskAsync(HelperClass.GetURL(new DateTime(1900, 1, 1), DateTime.Today, fileName), Path.Combine(HelperClass.homeDirectoryPath, $"{fileName}.csv"));
+                    Task donwloadTask = client.DownloadFileTaskAsync(HelperClass.GetURL(new DateTime(1900, 1, 1), DateTime.Today, fileName), Path.Combine(HelperClass.homeDirectoryPath, $"{fileName}.csv"));
+                    await donwloadTask;
                 }
             }
             catch (WebException wex)
@@ -262,17 +296,21 @@ namespace RobotInvest.Model
                     Console.WriteLine(wex.Response);
                 }
                 else{
-                    Console.WriteLine("source is null");
+                    Console.WriteLine("response is null");
                 }
+                return ResultStatusEnum.DownloadError;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception:");
                 Console.WriteLine(ex.Source);
                 Console.WriteLine(ex.GetType());
+                return ResultStatusEnum.DownloadError;
             }
+            return ResultStatusEnum.Success;
         }
 
+        /*
         public void DoSyncStuff()
         {
             int i = 0;
@@ -294,7 +332,9 @@ namespace RobotInvest.Model
 
             Console.WriteLine("Func exited successfully");
         }
+        */
 
+        /*
         public void UpdateIndicatorsSync()
         {
             // Downloading data sources
@@ -429,7 +469,9 @@ namespace RobotInvest.Model
             // Raising event that the indicator update function has finished
             UpdateFinishedEvent?.Invoke(this, new EventArgs());
         }
+        */
 
+        /*
         private void GetFredResourcesSync()
         {
             // Checking if home directory exists.
@@ -464,7 +506,9 @@ namespace RobotInvest.Model
                 }
             }
         }
+        */
 
+        /*
         private void DownloadFileSync(string fileName)
         {
             // Call event with filename argument to display in the main window
@@ -490,5 +534,6 @@ namespace RobotInvest.Model
                 Console.WriteLine(ex.GetType());
             }
         }
+        */
     }
 }

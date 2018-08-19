@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+
 using RobotInvest.Model;
 
 namespace RobotInvest
@@ -32,7 +34,24 @@ namespace RobotInvest
             // Disabling the button to prevent reentring the operation
             UpdateButtonOutlet.Enabled = false;
             Task task = mainModel.UpdateIndicators();
-
+            // Enabling update buttomn after the Update method finished
+            task.ContinueWith((t) => UpdateButtonOutlet.Enabled = true, TaskScheduler.FromCurrentSynchronizationContext());
+            // Displaying unhandled exceptions
+            task.ContinueWith((t) =>
+            { 
+                foreach (var exception in t.Exception.Flatten().InnerExceptions)
+                {
+                    var alert = new NSAlert
+                    {
+                        AlertStyle = NSAlertStyle.Warning,
+                        MessageText = exception.Message
+                    };
+                    alert.RunModal();
+                }
+            }, CancellationToken.None,
+               TaskContinuationOptions.OnlyOnFaulted,
+               TaskScheduler.FromCurrentSynchronizationContext());
+            
             //Task.Run(() => mainModel.DoSyncStuff());
             //Console.WriteLine("Continue");
 
@@ -76,7 +95,7 @@ namespace RobotInvest
 
             StocksLabel.StringValue = "+0.0%";
             InflationLabel.StringValue = "+0.0%";
-            YieldSpreadLabel.StringValue = "+0.0";
+            YieldSpreadLabel.StringValue = "+0.0%";
             RiskLabel.StringValue = "0.0";
             ProfitabilityLabel.StringValue = "+0.0%";
             BankMeterCurrentLabel.StringValue = "+0.0";
@@ -120,10 +139,48 @@ namespace RobotInvest
             }
         }
 
-        void MainModel_UpdateFinishedEvent(object sender, EventArgs e)
+        void MainModel_UpdateFinishedEvent(object sender, UpdateInfoEventArgs e)
         {
-            UpdateButtonOutlet.Enabled = true;
-            AppInfoLabel.StringValue = "Application Ready";
+            // Successful finish
+            if (e.Result == ResultStatusEnum.Success)
+            {
+                AppInfoLabel.StringValue = "Application Ready";
+            }
+            // Unsuccessful finish
+            else
+            {
+                switch (e.Result)
+                {
+                    case ResultStatusEnum.HomeDirectoryError:
+                        AppInfoLabel.StringValue = "ERROR";
+                        var alert = new NSAlert
+                        {
+                            AlertStyle = NSAlertStyle.Warning,
+                            MessageText = "ERROR",
+                            InformativeText = "The home directory doesn't exist"
+                        };
+                        alert.RunModal();
+                        break;
+                    default:
+                        break;
+                }
+                // Resetting the indicators displayed values
+                StocksLabel.StringValue = "+0.0%";
+                InflationLabel.StringValue = "+0.0%";
+                YieldSpreadLabel.StringValue = "+0.0%";
+                RiskLabel.StringValue = "0.0";
+                ProfitabilityLabel.StringValue = "+0.0%";
+                BankMeterCurrentLabel.StringValue = "+0.0";
+                BankMeterYTDLabel.StringValue = "+0.0";
+                // resetting the arrows displayed values
+                StocksArrow.FrameCenterRotation = 0;
+                InflationArrow.FrameCenterRotation = 0;
+                RiskArrow.FrameCenterRotation = 0;
+                YieldSpreadArrow.FrameCenterRotation = 0;
+                ProfitabilityArrow.FrameCenterRotation = 0;
+                LoansMajorArrow.FrameCenterRotation = 0;
+                LoansMinorArrow.FrameCenterRotation = 0;
+            }
         }
 
         void MainModel_DownloadInfoEvent(object sender, string e)

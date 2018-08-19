@@ -100,6 +100,8 @@
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\HelperClass.cs" />
     <Compile Include="Model\IndicatorData.cs" />
+    <Compile Include="Model\ResultStatusEnum.cs" />
+    <Compile Include="Model\UpdateInfoEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
