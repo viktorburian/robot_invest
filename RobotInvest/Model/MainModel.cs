@@ -55,35 +55,53 @@ namespace RobotInvest.Model
             // Downloading data sources
             Task<ResultStatusEnum> task = GetFredResources();
             await task;
-            Console.WriteLine(task.Result);
-            Console.WriteLine(task.IsCompletedSuccessfully);
-            Console.WriteLine(task.Status);
             if (task.Result != ResultStatusEnum.Success)
             {
-                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs(){Result=task.Result});
-                // Returning from the method
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs{Result=task.Result});
                 return;
             }
 
             // Read the values from files and calculate indicators
             indicatorData = IndicatorData.Instance;
-
-            // STOCKS indicator
             string[] linesDJIA = null;
             string[] linesMZM = null;
+            string[] linesMZMYTD = null;
+            string[] linesRISK = null;
+            string[] linesYieldSpread = null;
+            string[] linesProfits = null;
+            string[] linesTight = null;
+            string[] linesLoans = null;
             int positionDJIA = 0;
+            int positionRisk = 0;
+            int positionYieldSpread = 0;
+            int positionMZM = 0;
+            int positionLoans = 0;
+            double koef_1_DJIA = 1.07775711;
+            double koef_2_DJIA = 0.14532113;
+            double koefProfits = 8.0;
+            double koefLoans = 1.628044909602855;
+
+#region STOCKS
             try
             {
-                linesDJIA = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "DJIA.csv"));
-                linesMZM = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "MZM.csv"));
-                Array.Reverse(linesDJIA);
-                Array.Reverse(linesMZM);
-
+                linesDJIA = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[0]}.csv"));
+                linesMZM = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[1]}.csv"));
             }
-            catch (Exception ex)
+            catch(DirectoryNotFoundException dex)
             {
-                throw new NotImplementedException(ex.Message);
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs { Result = ResultStatusEnum.DirectoryNotFoundError,
+                                                                            ExceptionMessage = dex.Message});
+                return;
             }
+            catch(IOException ioex)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs { Result = ResultStatusEnum.FileAccessError,
+                                                                            ExceptionMessage = ioex.Message});
+                return;
+            }
+            Array.Reverse(linesDJIA);
+            Array.Reverse(linesMZM);
+
             while (positionDJIA < linesDJIA.Count() && linesDJIA[positionDJIA].Split(',')[1].Equals('.'))
             {
                 positionDJIA++;
@@ -94,82 +112,139 @@ namespace RobotInvest.Model
             double DJIA  = Convert.ToDouble(linesDJIA[positionDJIA].Split(',')[1]);
             double deltaDays = (DateTime.ParseExact(linesDJIA[positionDJIA].Split(',')[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) 
                              - DateTime.ParseExact(linesMZM[0].Split(',')[0], "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)).Days;
-            // Pavel Kohout log10 linear fit
             double MZM_current = Math.Pow((MZM_0 / MZM_1 + MZM_1 / MZM_2) / 2, deltaDays / 30) * MZM_0;
-            indicatorData.Stocks = 100 * ((DJIA / Math.Pow(10, 1.07775711 * Math.Log10(MZM_current) - 0.14532113)) - 1);
+            // Pavel Kohout log10 linear fit
+            indicatorData.Stocks = 100 * ((DJIA / Math.Pow(10, koef_1_DJIA * Math.Log10(MZM_current) - koef_2_DJIA)) - 1);
+#endregion
 
-            // MZMYTD indicator
-            string[] lines = null;
+#region INFLATION
             try
             {
-                lines = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "MZMYTD.csv"));
-                Array.Reverse(lines);
+                linesMZMYTD = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[2]}.csv"));
             }
-            catch (Exception e)
+            catch (DirectoryNotFoundException dex)
             {
-                Console.WriteLine(e.Message);
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.DirectoryNotFoundError,
+                    ExceptionMessage = dex.Message
+                });
+                return;
             }
-            indicatorData.Inflation = Convert.ToDouble(lines[0].Split(',')[1]);
+            catch (IOException ioex)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.FileAccessError,
+                    ExceptionMessage = ioex.Message
+                });
+                return;
+            }
+            Array.Reverse(linesMZMYTD);
 
-            // RISK indicator
+            indicatorData.Inflation = Convert.ToDouble(linesMZMYTD[0].Split(',')[1]);
+#endregion
+
+#region RISK
             try
             {
-                lines = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "VIX.csv"));
-                Array.Reverse(lines);
+                linesRISK = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[3]}.csv"));
             }
-            catch (Exception e)
+            catch (DirectoryNotFoundException dex)
             {
-                Console.WriteLine(e.Message);
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.DirectoryNotFoundError,
+                    ExceptionMessage = dex.Message
+                });
+                return;
             }
-            int positionRisk = 0;
-            while (positionRisk < lines.Count() && lines[positionRisk].Split(',')[1].Equals('.'))
+            catch (IOException ioex)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.FileAccessError,
+                    ExceptionMessage = ioex.Message
+                });
+                return;
+            }
+            Array.Reverse(linesRISK);
+
+            while (positionRisk < linesRISK.Count() && linesRISK[positionRisk].Split(',')[1].Equals('.'))
             {
                 positionRisk++;
             }
-            indicatorData.Risk = Convert.ToDouble(lines[positionRisk].Split(',')[1]);
+            indicatorData.Risk = Convert.ToDouble(linesRISK[positionRisk].Split(',')[1]);
+#endregion
 
-            // YIELD SPREAD indicator
+#region YIELD SPREAD
             try
             {
-                lines = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "YIELDSPREAD.csv"));
-                Array.Reverse(lines);
+                linesYieldSpread = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[6]}.csv"));
             }
-            catch (Exception e)
+            catch (DirectoryNotFoundException dex)
             {
-                Console.WriteLine(e.Message);
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.DirectoryNotFoundError,
+                    ExceptionMessage = dex.Message
+                });
+                return;
             }
-            int positionYieldSpread = 0;
-            while (lines[positionYieldSpread].Split(',')[1].Equals('.') && positionYieldSpread < lines.Count())
+            catch (IOException ioex)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.FileAccessError,
+                    ExceptionMessage = ioex.Message
+                });
+                return;
+            }
+            Array.Reverse(linesYieldSpread);
+
+            while (linesYieldSpread[positionYieldSpread].Split(',')[1].Equals('.') && positionYieldSpread < linesYieldSpread.Count())
             {
                 positionYieldSpread++;
             }
-            indicatorData.YieldSpread = Convert.ToDouble(lines[positionYieldSpread].Split(',')[1]);
+            indicatorData.YieldSpread = Convert.ToDouble(linesYieldSpread[positionYieldSpread].Split(',')[1]);
+#endregion
 
-            // PROFITS indicator
-            double koefProfits = 8.0;
-            string[] linesProfits = null;
+#region PROFITS
             try
             {
-                linesProfits = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "PROFITS.csv"));
-                linesMZM     = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "MZM.csv"));
-                Array.Reverse(linesProfits);
-                Array.Reverse(linesMZM);
+                linesProfits = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[7]}.csv"));
+                linesMZM     = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, $"{HelperClass.fileNames[1]}.csv"));
+
             }
-            catch (Exception e)
+            catch (DirectoryNotFoundException dex)
             {
-                Console.WriteLine(e.Message);
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.DirectoryNotFoundError,
+                    ExceptionMessage = dex.Message
+                });
+                return;
             }
-            int positionMZM = 0;
+            catch (IOException ioex)
+            {
+                UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs
+                {
+                    Result = ResultStatusEnum.FileAccessError,
+                    ExceptionMessage = ioex.Message
+                });
+                return;
+            }
+            Array.Reverse(linesProfits);
+            Array.Reverse(linesMZM);
+
             while (positionMZM < linesMZM.Count() && linesProfits[0].Split(',')[0] != linesMZM[positionMZM].Split(',')[0])
             {
                 positionMZM++;
             }
             indicatorData.Profits = 100*(koefProfits * Convert.ToDouble(linesProfits[0].Split(',')[1]) / Convert.ToDouble(linesMZM[positionMZM].Split(',')[1]) - 1);
+#endregion
 
-            // LOANS Major indicator
-            double koefLoans = 1.628044909602855;
-            string[] linesTight = null;
-            string[] linesLoans = null;
+#region LOANS
             try
             {
                 linesTight = File.ReadAllLines(Path.Combine(HelperClass.homeDirectoryPath, "TIGHTENING.csv"));
@@ -182,7 +257,7 @@ namespace RobotInvest.Model
             {
                 Console.WriteLine(e.Message);
             }
-            int positionLoans = 0;
+
             // Deprecated to take just the last record of the loans
             /*
             while (positionLoans < linesLoans.Count() && linesTight[0].Split(',')[0] != linesLoans[positionLoans].Split(',')[0])
@@ -193,25 +268,10 @@ namespace RobotInvest.Model
             indicatorData.LoansMajor = koefLoans * Convert.ToDouble(linesTight[0].Split(',')[1]) + Convert.ToDouble(linesLoans[positionLoans].Split(',')[1]);
             // LOANS Minor indicator
             indicatorData.LoansMinor = koefLoans * Convert.ToDouble(linesTight[4].Split(',')[1]) + Convert.ToDouble(linesLoans[positionLoans+12].Split(',')[1]);
+#endregion
 
             // Raising event that the indicator update function has finished
-            UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs(){Result=ResultStatusEnum.Success});
-
-            /*
-            Console.WriteLine("Před chybou");
-            try
-            {
-                int b = 0;
-                int a = 5 / b;
-            }
-            catch (Exception e)
-            {
-                //return Task.FromException(e);
-                Console.WriteLine("Error message: "+e.Message);
-                throw new NotImplementedException("ERROR VOLE");
-            }
-            Console.WriteLine("Konec");
-            */
+            UpdateFinishedEvent?.Invoke(this, new UpdateInfoEventArgs{Result=ResultStatusEnum.Success});
         }
 
         private async Task<ResultStatusEnum> GetFredResources()
@@ -227,6 +287,8 @@ namespace RobotInvest.Model
             List<string> fileEntries = Directory.GetFiles(HelperClass.homeDirectoryPath, "*.csv", SearchOption.TopDirectoryOnly).ToList();
             foreach (var fileName in HelperClass.fileNames)
             {
+                // TODO: Check if the internet connection is established
+
                 // Check if the fileName exists in the fileEntries
                 if (fileEntries.Exists(fe => fe.EndsWith(fileName+".csv", StringComparison.CurrentCulture)))
                 {
@@ -236,17 +298,9 @@ namespace RobotInvest.Model
                     {
                         Task<ResultStatusEnum> task = DownloadFile(fileName);
                         await task;
-                        // Research task.IsCompletedSuccessfully property as condition
                         if (!task.IsCompleted || task.IsFaulted || task.IsCanceled || task.Result != ResultStatusEnum.Success)
                         {
-                            Console.WriteLine("NOT OK");
-                            // Keep this line
                             return task.Result;
-                        }
-                        // Remove the else statement
-                        else
-                        {
-                            Console.WriteLine("OK");
                         }
                     }
                 }
@@ -254,18 +308,9 @@ namespace RobotInvest.Model
                 {
                     Task<ResultStatusEnum> task = DownloadFile(fileName);
                     await task;
-                    Console.WriteLine("Download file status: "+task.Result);
-                    Console.WriteLine("Completed succesfully: "+task.IsCompletedSuccessfully);
                     if (!task.IsCompleted || task.IsFaulted || task.IsCanceled || task.Result != ResultStatusEnum.Success)
                     {
-                        Console.WriteLine("NOT OK");
-                        // Keep this line
                         return task.Result;
-                    }
-                    // remove the else statement
-                    else
-                    {
-                        Console.WriteLine("OK");
                     }
                 }
             }
@@ -285,26 +330,8 @@ namespace RobotInvest.Model
                     await donwloadTask;
                 }
             }
-            catch (WebException wex)
+            catch (WebException)
             {
-                Console.WriteLine("Web exception:");
-                Console.WriteLine("wex message: "+wex.Message);
-                Console.WriteLine("Base ex message: "+wex.GetBaseException().Message);
-                Console.WriteLine("status: "+wex.Status.ToString());
-                if(wex.Response != null)
-                {
-                    Console.WriteLine(wex.Response);
-                }
-                else{
-                    Console.WriteLine("response is null");
-                }
-                return ResultStatusEnum.DownloadError;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception:");
-                Console.WriteLine(ex.Source);
-                Console.WriteLine(ex.GetType());
                 return ResultStatusEnum.DownloadError;
             }
             return ResultStatusEnum.Success;

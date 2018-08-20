@@ -9,5 +9,6 @@ namespace RobotInvest.Model
 
         public ResultStatusEnum Result { get; set; }
         public string FileName { set; get; }
+        public string ExceptionMessage { set; get; }
     }
 }

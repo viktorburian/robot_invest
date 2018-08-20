@@ -44,44 +44,14 @@ namespace RobotInvest
                     var alert = new NSAlert
                     {
                         AlertStyle = NSAlertStyle.Warning,
-                        MessageText = exception.Message
+                        MessageText = "Unhandled Exception",
+                        InformativeText = exception.Message
                     };
                     alert.RunModal();
                 }
             }, CancellationToken.None,
                TaskContinuationOptions.OnlyOnFaulted,
                TaskScheduler.FromCurrentSynchronizationContext());
-            
-            //Task.Run(() => mainModel.DoSyncStuff());
-            //Console.WriteLine("Continue");
-
-            //Task.Run(() => mainModel.UpdateIndicatorsSync());
-
-            /*
-            Task task1 = mainModel.FooAsync();
-            Console.WriteLine("Is task faulted?: "+task1.IsFaulted);
-
-            task1.Exception?.InnerExceptions.ToList().ForEach((obj) => Console.WriteLine(obj.Message));
-            Exception ex = task1.Exception?.InnerException;
-            */
-
-            /*
-            foreach (var item in task1.Exception?.InnerExceptions)
-            {
-                Console.WriteLine(item.Message);
-            }*/
-
-            //Console.WriteLine(task.Exception.InnerException.Message);
-            /*
-            try
-            {
-                Task task = mainModel.UpdateIndicators();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            */
         }
 
         public ViewController(IntPtr handle) : base(handle)
@@ -149,17 +119,28 @@ namespace RobotInvest
             // Unsuccessful finish
             else
             {
+                AppInfoLabel.StringValue = "Application run into an error";
+                NSAlert alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Warning
+                };
                 switch (e.Result)
                 {
                     case ResultStatusEnum.HomeDirectoryError:
-                        AppInfoLabel.StringValue = "ERROR";
-                        var alert = new NSAlert
-                        {
-                            AlertStyle = NSAlertStyle.Warning,
-                            MessageText = "ERROR",
-                            InformativeText = "The home directory doesn't exist"
-                        };
+                        alert.MessageText = "The home directory doesn't exist";
                         alert.RunModal();
+                        break;
+                    case ResultStatusEnum.DirectoryNotFoundError:
+                        alert.MessageText = "The directory not found";
+                        alert.InformativeText = e.ExceptionMessage;
+                        alert.RunModal();
+                        break;
+                    case ResultStatusEnum.FileAccessError:
+                        alert.MessageText = "File access error";
+                        alert.InformativeText = e.ExceptionMessage;
+                        alert.RunModal();
+                        break;
+                    case ResultStatusEnum.InternetConnectionError:
                         break;
                     default:
                         break;

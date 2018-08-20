@@ -6,6 +6,8 @@ namespace RobotInvest.Model
         Success = 0,
         DownloadError,
         FileAccessError,
-        HomeDirectoryError
+        HomeDirectoryError,
+        DirectoryNotFoundError,
+        InternetConnectionError
     }
 }
