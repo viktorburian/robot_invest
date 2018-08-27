@@ -13,8 +13,9 @@ namespace RobotInvest
 {
     public partial class ViewController : NSViewController, IDisposable
     {
-        MainModel mainModel = new MainModel();
+        private MainModel mainModel = new MainModel();
         private IndicatorData _indicatorData;
+        private Progress<ProgressReportModel> progress = new Progress<ProgressReportModel>();
 
         [Export("Indicators")]
         public IndicatorData Indicators
@@ -33,18 +34,25 @@ namespace RobotInvest
         {
             // Disabling the button to prevent reentring the operation
             UpdateButtonOutlet.Enabled = false;
-            Task task = mainModel.UpdateIndicators();
+
+            progress.ProgressChanged += ReportProgress;
+            Task task = mainModel.UpdateIndicators(progress);
             // Enabling update buttomn after the Update method finished
             task.ContinueWith((t) => UpdateButtonOutlet.Enabled = true, TaskScheduler.FromCurrentSynchronizationContext());
             // Displaying unhandled exceptions
             task.ContinueWith((t) =>
-            { 
+            {
+                if (t.Exception.Flatten().InnerExceptions != null)
+                {
+                    AppInfoLabel.StringValue = "Application ran into an error";
+                    ResetDashboard();
+                }
                 foreach (var exception in t.Exception.Flatten().InnerExceptions)
                 {
                     var alert = new NSAlert
                     {
                         AlertStyle = NSAlertStyle.Warning,
-                        MessageText = "Unhandled Exception",
+                        MessageText = "Unhandled Exception occured",
                         InformativeText = exception.Message
                     };
                     alert.RunModal();
@@ -63,20 +71,12 @@ namespace RobotInvest
             base.ViewDidLoad();
             // Do any additional setup after loading the view.
 
-            StocksLabel.StringValue = "+0.0%";
-            InflationLabel.StringValue = "+0.0%";
-            YieldSpreadLabel.StringValue = "+0.0%";
-            RiskLabel.StringValue = "0.0";
-            ProfitabilityLabel.StringValue = "+0.0%";
-            BankMeterCurrentLabel.StringValue = "+0.0";
-            BankMeterYTDLabel.StringValue = "+0.0";
-
+            ResetDashboard();
             AppInfoLabel.StringValue = "Application Ready";
 
             Indicators = IndicatorData.Instance;
             Indicators.PropertyChanged += UpdateUI;
             mainModel.UpdateFinishedEvent += MainModel_UpdateFinishedEvent;
-            mainModel.DownloadInfoEvent += MainModel_DownloadInfoEvent;
         }
 
         void UpdateUI(object sender, PropertyChangedEventArgs e)
@@ -114,12 +114,13 @@ namespace RobotInvest
             // Successful finish
             if (e.Result == ResultStatusEnum.Success)
             {
-                AppInfoLabel.StringValue = "Application Ready";
+                AppInfoLabel.StringValue = "FRED resources downloaded";
             }
             // Unsuccessful finish
             else
             {
-                AppInfoLabel.StringValue = "Application run into an error";
+                ResetDashboard();
+                AppInfoLabel.StringValue = "Application ran into an error";
                 NSAlert alert = new NSAlert
                 {
                     AlertStyle = NSAlertStyle.Warning
@@ -140,33 +141,36 @@ namespace RobotInvest
                         alert.InformativeText = e.ExceptionMessage;
                         alert.RunModal();
                         break;
-                    case ResultStatusEnum.InternetConnectionError:
+                    case ResultStatusEnum.DownloadError:
+                        alert.MessageText = "File download error";
+                        if (e.ExceptionMessage != null)
+                        {
+                            if (e.FileName != null)
+                            {
+                                alert.InformativeText = $"{e.FileName}\n{e.ExceptionMessage}";
+                            }
+                            else
+                            {
+                                alert.InformativeText = e.ExceptionMessage;
+                            }
+                        }
+                        else
+                        {
+                            alert.InformativeText = "Check your internet connection";
+                        }
+                        alert.RunModal();
                         break;
                     default:
+                        alert.MessageText = "Unknown error";
+                        alert.RunModal();
                         break;
                 }
-                // Resetting the indicators displayed values
-                StocksLabel.StringValue = "+0.0%";
-                InflationLabel.StringValue = "+0.0%";
-                YieldSpreadLabel.StringValue = "+0.0%";
-                RiskLabel.StringValue = "0.0";
-                ProfitabilityLabel.StringValue = "+0.0%";
-                BankMeterCurrentLabel.StringValue = "+0.0";
-                BankMeterYTDLabel.StringValue = "+0.0";
-                // resetting the arrows displayed values
-                StocksArrow.FrameCenterRotation = 0;
-                InflationArrow.FrameCenterRotation = 0;
-                RiskArrow.FrameCenterRotation = 0;
-                YieldSpreadArrow.FrameCenterRotation = 0;
-                ProfitabilityArrow.FrameCenterRotation = 0;
-                LoansMajorArrow.FrameCenterRotation = 0;
-                LoansMinorArrow.FrameCenterRotation = 0;
             }
         }
 
-        void MainModel_DownloadInfoEvent(object sender, string e)
+        private void ReportProgress(object sender, ProgressReportModel e)
         {
-            AppInfoLabel.StringValue = "Downloading " + e;
+            AppInfoLabel.StringValue = $"Downloaded {e.FileDownloaded}";
         }
 
         public override void ViewDidDisappear()
@@ -175,6 +179,26 @@ namespace RobotInvest
             // Releasing the resources
             Indicators.PropertyChanged -= UpdateUI;
             mainModel.UpdateFinishedEvent -= MainModel_UpdateFinishedEvent;
+        }
+
+        void ResetDashboard()
+        {
+            // Resetting the indicators displayed values
+            StocksLabel.StringValue = "+0.0%";
+            InflationLabel.StringValue = "+0.0%";
+            YieldSpreadLabel.StringValue = "+0.0%";
+            RiskLabel.StringValue = "0.0";
+            ProfitabilityLabel.StringValue = "+0.0%";
+            BankMeterCurrentLabel.StringValue = "+0.0";
+            BankMeterYTDLabel.StringValue = "+0.0";
+            // resetting the arrows displayed values
+            StocksArrow.FrameCenterRotation = 0;
+            InflationArrow.FrameCenterRotation = 0;
+            RiskArrow.FrameCenterRotation = 0;
+            YieldSpreadArrow.FrameCenterRotation = 0;
+            ProfitabilityArrow.FrameCenterRotation = 0;
+            LoansMajorArrow.FrameCenterRotation = 0;
+            LoansMinorArrow.FrameCenterRotation = 0;
         }
 
         public override NSObject RepresentedObject

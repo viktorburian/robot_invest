@@ -74,7 +74,7 @@
     <ImageAsset Include="Assets.xcassets\Arrow Minor.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Arrow Minor.imageset\Arrow_minor.pdf" />
     <ImageAsset Include="Resources\Assets.xcassets\Dashboard.imageset\Dashboard.pdf" />
-    <ImageAsset Include="Assets.xcassets\Dashboard.imageset\Dashboard_2.pdf" />
+    <ImageAsset Include="Assets.xcassets\Dashboard.imageset\Dashboard_4.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -102,6 +102,7 @@
     <Compile Include="Model\IndicatorData.cs" />
     <Compile Include="Model\ResultStatusEnum.cs" />
     <Compile Include="Model\UpdateInfoEventArgs.cs" />
+    <Compile Include="Model\ProgressReportModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
