@@ -297,7 +297,7 @@ namespace RobotInvest.Model
             return new UpdateInfoEventArgs { Result = ResultStatusEnum.Success };
         }
 
-        private static UpdateInfoEventArgs DownloadFileSync(IProgress<ProgressReportModel> progress, string fileName)
+        private UpdateInfoEventArgs DownloadFileSync(IProgress<ProgressReportModel> progress, string fileName)
         {
             ProgressReportModel report = new ProgressReportModel();
             using (WebClient client = new WebClient())
@@ -311,9 +311,9 @@ namespace RobotInvest.Model
                 {
                     return new UpdateInfoEventArgs { Result = ResultStatusEnum.DownloadError, FileName=fileName, ExceptionMessage = wex.Message };
                 }
-                report.FileDownloaded = fileName;
-                progress.Report(report);
             }
+            report.FileDownloaded = fileName;
+            progress.Report(report);
             return new UpdateInfoEventArgs { Result = ResultStatusEnum.Success };
         }
     }
