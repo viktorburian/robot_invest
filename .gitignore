@@ -1,5 +1,5 @@
-Robotinvest/bin/
-Robotinvest/obj/
+Robotinvest/bin/**
+Robotinvest/obj/**
 tags
-.*
+.DS_Store
 ./*/.DS_Store
