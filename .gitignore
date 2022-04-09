@@ -1,0 +1,5 @@
+Robotinvest/bin/
+Robotinvest/obj/
+tags
+.*
+./*/.DS_Store
